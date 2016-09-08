@@ -7,7 +7,7 @@ import java.net.Socket;
 
 /**
  * 写消息线程
- *@author   abu   2016/9/6   10:06
+ *@author   abu   2016/9/8   16:22
  */
 public class OutputThread extends Thread {
 	private DataOutputStream dos;
