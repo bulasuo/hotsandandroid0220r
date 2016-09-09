@@ -33,13 +33,24 @@ public class InputThread extends Thread {
 
     private int readLength;
 
+    public void tryDestroy(){
+        try {
+            tryDestroy = true;
+            if (dis != null)
+                dis.close();
+            if (socket != null)
+                socket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public InputThread(Socket socket, OutputThread out) {
         this.socket = socket;
         this.out = out;
         try {
             dis = new DataInputStream(socket.getInputStream());// 实例化对象输入流
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -52,19 +63,19 @@ public class InputThread extends Thread {
                 //增加一个5分钟没有连接就断开 防止客户端意外断开
                 readMessage();
             }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
+                out.tryDestroy = true;
+                out.tryDestroy();
+                out = null;
                 if (dis != null)
                     dis.close();
                 if (socket != null)
                     socket.close();
-            } catch (IOException e) {
+                // TODO: 2016/9/9 重新连接
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -123,7 +134,7 @@ public class InputThread extends Thread {
      *
      * @return
      */
-    private boolean isPackLegal() throws IOException {
+    private boolean isPackLegal() throws Exception {
         readData(bufferIndex + 42);
         if (buffer[bufferIndex - 1] == TranProtocol.LINE[1]
                 && buffer[bufferIndex - 2] == TranProtocol.LINE[0]
@@ -162,12 +173,14 @@ public class InputThread extends Thread {
      * @param length 应该小于等于BUFFER_MAX_LENGTH
      * @throws IOException
      */
-    private void readData(int length) throws IOException {
+    private void readData(int length) throws Exception {
         if (bufferIndex >= length || length > BUFFER_MAX_LENGTH)
             return;
         while (!tryDestroy) {
             while ((readLength = dis.read(buffer, bufferIndex, length - bufferIndex)) > 0) {
                 System.out.println("readLength:" + readLength);
+                if(readLength == -1)
+                    throw new Exception();
                 bufferIndex += readLength;
                 if (bufferIndex >= length)
                     return;
@@ -182,12 +195,14 @@ public class InputThread extends Thread {
      * @param length 应该小于等于buf的长度
      * @throws IOException
      */
-    private void readDataIntoBuffer(byte[] buf, int length) throws IOException {
+    private void readDataIntoBuffer(byte[] buf, int length) throws Exception {
         int index = 0;
         int readl = 0;
         while (!tryDestroy) {
             while ((readl = dis.read(buf, index, length - index)) > 0) {
                 System.out.println("readLength:" + readl);
+                if(readl == -1)
+                    throw new Exception();
                 index += readl;
                 if (index >= length)
                     return;
@@ -219,9 +234,9 @@ public class InputThread extends Thread {
      * 数据协议错误,没有经过三次握手就传数据, 则重新连接
      *@author   abu   2016/9/5   15:15
      */
-    private void reConnect() throws IOException {
-        tryDestroy = true;
-        socket.close();
+    private void reConnect() throws Exception {
         // TODO: 2016/9/9 socket重连
+
+        throw new Exception();
     }
 }

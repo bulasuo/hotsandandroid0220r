@@ -8,5 +8,5 @@ package com.hotsand.blink.service;
  * 
  */
 public interface MessageListener {
-	public void Message(TranObject msg);
+//	public void Message(TranObject msg);
 }

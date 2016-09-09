@@ -2,3 +2,13 @@
 1.请求后台运行权限
 2.监听广播 解锁广播,开机广播, 网络变化广播来看service还存在吗?
 3.service销毁后重新启动service 或者延迟发送启动广播
+
+
+2016/9/9
+	模拟socket断开 发送数据会怎么样?
+
+	java.net.ConnectException: failed to connect to /192.168.1.107 (port 8001) after 1000ms: isConnected failed: ECONNREFUSED (Connection refused) 连接不上服务器
+	java.net.SocketTimeoutException: failed to connect to /192.168.1.107 (port 8001) after 1000ms移动网访问不存在服务器
+	java.net.SocketException: sendto failed: ECONNRESET (Connection reset by peer)服务器断开
+	java.net.SocketException: sendto failed: ETIMEDOUT (Connection timed out)c端自己断网
+	java.net.SocketException: sendto failed: EPIPE (Broken pipe)服务端把socket关了

@@ -4,15 +4,16 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
  *@author   abu   2016/9/8   11:35
  */
 public class XService extends Service {
-    private Socket socket;
-    private InputThread in;
-    private OutputThread out;
+    private static Socket socket;
+    public static InputThread in;
+    public static OutputThread out;
 
     public XService() {
     }
@@ -30,9 +31,25 @@ public class XService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void initSocket(){
-        socket = new Socket();
+    private void initSocket() {
+        if(socket == null) {
+            socket = new Socket();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        socket.connect(new InetSocketAddress("192.168.1.107", 8080), 1000);
+                        if(socket.isConnected())
+                            socket.setKeepAlive(true);
+                        ss
 
+                    } catch (Exception e) {
+                        socket = null;
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
     }
 
     @Override
