@@ -98,6 +98,10 @@ public class XUtil {
         return r;
     }
 
+    /**
+     * 将4个字节转为int
+     *@author   abu   2016/9/9   9:07
+     */
     public static int byteArray2Int(byte[] bytes, int offset) {
         return ((bytes[offset] & 0xff) << 24)
                 + ((bytes[offset + 1] & 0xff) << 16)

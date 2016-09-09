@@ -15,7 +15,6 @@ public class OutputThread extends Thread {
 	private boolean tryDestroy = false;
 	private Socket socket;
 	public byte[] keyBytesAES;//AES口令bytes 用于加密数据
-	public boolean isLogin = false;//记录用户是否有个人权限
 
 
 	public OutputThread(Socket socket) {
@@ -50,8 +49,6 @@ public class OutputThread extends Thread {
 			e.printStackTrace();
 		} finally {
 			try {
-				// TODO: 2016/9/5 map去除当前outStream
-				// map.remove();
 				if (dos != null)
 					dos.close();
 				if (socket != null)

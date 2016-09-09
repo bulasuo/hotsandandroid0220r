@@ -7,12 +7,9 @@ import com.hotsand.blink.security.SecurityHS;
 import com.hotsand.blink.util.XUtil;
 
 import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.security.Key;
-import java.util.ArrayList;
+import java.util.UUID;
 
 
 /**
@@ -23,9 +20,8 @@ public class InputThread extends Thread {
     private Socket socket;
     private OutputThread out;
     private DataInputStream dis;
-    private FileOutputStream fos;//图片写出流
 
-    private Key keyPrivateRSA;//RSA公钥 用于给客户端
+    private byte[] keyBytesRSA;
     private byte[] keyBytesAES;//AES口令bytes 用于加密数据
 
     private boolean tryDestroy = false;
@@ -38,10 +34,9 @@ public class InputThread extends Thread {
     private int readLength;
 
 
-    public InputThread(Socket socket, OutputThread out, Key keyPrivateRSA) {
+    public InputThread(Socket socket, OutputThread out) {
         this.socket = socket;
         this.out = out;
-        this.keyPrivateRSA = keyPrivateRSA;
         try {
             dis = new DataInputStream(socket.getInputStream());// 实例化对象输入流
         } catch (IOException e) {
@@ -65,8 +60,6 @@ public class InputThread extends Thread {
             e.printStackTrace();
         } finally {
             try {
-                if (fos != null)
-                    fos.close();
                 if (dis != null)
                     dis.close();
                 if (socket != null)
@@ -86,39 +79,40 @@ public class InputThread extends Thread {
     private void goProtocolType(byte type) throws Exception {
         switch (type) {
             case (byte) 0x01:
-                if (keyBytesAES == null) {
-                    stopConnect();
+                if (keyBytesRSA == null || keyBytesAES == null) {
+                    reConnect();
                     return;
                 }
                 readData(bufferIndex + 2);
-                final int fileCount = buffer[42] & 0xff;
+                final int fileCount = buffer[42] & 0xff;//这边fileCount应该为0x00
+                if(fileCount != 0)
+                    reConnect();
                 readData(bufferIndex + 4 + fileCount * 4);
                 JSONObject json = readJson(XUtil.byteArray2Int(buffer, 43));
-                // TODO: 2016/9/5 先根据json看用户有权限传图片吗
-                //如果用户没权限传图片stop连接并且return;
-
-                ArrayList<String> fileList = new ArrayList<>();
+                //暂时服务器传图片给客户端不会与jspnStr混传,图片的传输另外写短连接协议
+                /*ArrayList<String> fileList = new ArrayList<>();
                 for (int i = 0; i < fileCount; i++)
-                    fileList.add(readImg(XUtil.byteArray2Int(buffer, 47 + i * 4)));
+                    fileList.add(readImg(XUtil.byteArray2Int(buffer, 47 + i * 4)));*/
                 if (isPackLegal()) {
-                    // TODO: 2016/9/5  如果合法则进行接下来的json功能逻辑
-                    //json
-                    System.out.println("jsonStr:"+json.toJSONString());
+                    // TODO: 2016/9/5  如果合法则广播json
+                    System.out.println("response_jsonStr:"+json.toJSONString());
                 } else {
-                    XUtil.deleteDir(fileList);
-                    stopConnect();
+                    reConnect();
                 }
                 break;
             case (byte) 0xff:
                 readData(bufferIndex + 4);
-                this.keyBytesAES = readAESKey(XUtil.byteArray2Int(buffer, bufferIndex - 4));
+                this.keyBytesRSA = readRSAKey(XUtil.byteArray2Int(buffer, bufferIndex - 4));
                 if(isPackLegal()){
-                    //AESKeyBytes
-                    System.out.println("AESKey:"+XUtil.bytes2HexString(keyBytesAES));
+                    System.out.println("RSAKey:"+XUtil.bytes2HexString(keyBytesRSA));
+                    this.keyBytesAES = UUID.randomUUID().toString().getBytes();
                     out.keyBytesAES = this.keyBytesAES;
+                    // TODO: 2016/9/9 out 发送RSA编码后的AESkey
+                    out.sendMessage(new TranProtocol((byte)0xff,
+                            SecurityHS.formRSAPublicKey(this.keyBytesRSA)));
                 } else {
                     this.keyBytesAES = null;
-                    stopConnect();
+                    reConnect();
                 }
                 break;
         }
@@ -143,13 +137,13 @@ public class InputThread extends Thread {
     }
 
     /**
-     * use when bufferIndex指向AESKey第一个字节
+     * use when bufferIndex指向RSAKey第一个字节
      *@author   abu   2016/9/5   14:53
      */
-    private byte[] readAESKey(int length) throws Exception {
+    private byte[] readRSAKey(int length) throws Exception {
         byte[] temp = new byte[length];
         readDataIntoBuffer(temp, length);
-        return SecurityHS.RSADecode(temp, keyPrivateRSA);
+        return temp;
     }
 
     /**
@@ -160,38 +154,6 @@ public class InputThread extends Thread {
         byte[] jsonBytes = new byte[length];
         readDataIntoBuffer(jsonBytes, length);
         return JSON.parseObject(new String(SecurityHS.AESDecode(jsonBytes, keyBytesAES)));
-    }
-
-    /**
-     * use when bufferIndex指向img第一个字节
-     *@author   abu   2016/9/5   14:50
-     */
-    private String readImg(int length) throws IOException {
-        final int IMG_BUFF_MAX = 1024;
-        byte[] imgBuf = new byte[IMG_BUFF_MAX];
-        final String filePath = "Config.IMG_PATH"+ SecurityHS.MD5Encode(System.currentTimeMillis() + "");
-        fos = new FileOutputStream(new File(filePath));
-
-        int max = 0;
-        int readl = 0;
-        while (!tryDestroy) {
-
-            if (length >= IMG_BUFF_MAX)
-                max = IMG_BUFF_MAX;
-            else
-                max = length;
-            while ((readl = dis.read(imgBuf, 0, max)) > 0) {
-                length -= readl;
-                System.out.println("readLength:" + readl);
-                fos.write(imgBuf, 0, readl);
-                fos.flush();
-                if (length <= 0) {
-                    fos.close();
-                    return filePath;
-                }
-            }
-        }
-        return null;
     }
 
     /**
@@ -247,17 +209,19 @@ public class InputThread extends Thread {
             goProtocolType(buffer[40]);//当有包头后进入协议类型解析
         } else {
             //不是包头,数据错误 断开等待重连
-            stopConnect();
+            reConnect();
+
         }
 
     }
 
     /**
-     * 数据协议错误,没有经过三次握手就传数据, 则断开连接
+     * 数据协议错误,没有经过三次握手就传数据, 则重新连接
      *@author   abu   2016/9/5   15:15
      */
-    private void stopConnect() throws IOException {
+    private void reConnect() throws IOException {
         tryDestroy = true;
         socket.close();
+        // TODO: 2016/9/9 socket重连
     }
 }
