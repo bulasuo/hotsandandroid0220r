@@ -43,8 +43,8 @@ public class XService extends Service implements OnSocketChangeListener{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        initSocket();
         System.out.println("Service_onStartCommand::"+flags);
+        initSocket();
         flags = START_STICKY;
         return super.onStartCommand(intent, flags, startId);
     }

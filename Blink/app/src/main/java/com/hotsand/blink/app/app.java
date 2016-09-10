@@ -8,10 +8,11 @@ import com.hotsand.blink.service.XService;
 /**
  * Created by abu on 2016/9/10 11:34.
  */
-public class app extends Application {
+public class App extends Application {
 
     @Override
     public void onCreate() {
+        System.out.println("ininin");
         super.onCreate();
         startService(new Intent(this, XService.class));
     }
