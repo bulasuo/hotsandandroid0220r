@@ -3,11 +3,6 @@ package com.hotsand.blink;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -15,7 +10,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -41,6 +36,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
-        }).start();
+        }).start();*/
     }
 }

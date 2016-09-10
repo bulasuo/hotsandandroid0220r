@@ -20,11 +20,12 @@ public class InputThread extends Thread {
     private Socket socket;
     private OutputThread out;
     private DataInputStream dis;
+    private OnSocketChangeListener onSocketChangeListener;
 
     private byte[] keyBytesRSA;
     private byte[] keyBytesAES;//AES口令bytes 用于加密数据
 
-    private boolean tryDestroy = false;
+    public boolean tryDestroy = false;
     private static final int BUFFER_MAX_LENGTH = 1024;
 
     private byte[] buffer = new byte[BUFFER_MAX_LENGTH];
@@ -45,7 +46,8 @@ public class InputThread extends Thread {
         }
     }
 
-    public InputThread(Socket socket, OutputThread out) {
+    public InputThread(Socket socket, OutputThread out, OnSocketChangeListener onSocketChangeListener) {
+        this.onSocketChangeListener = onSocketChangeListener;
         this.socket = socket;
         this.out = out;
         try {
@@ -67,14 +69,13 @@ public class InputThread extends Thread {
             e.printStackTrace();
         } finally {
             try {
-                out.tryDestroy = true;
-                out.tryDestroy();
+                XService.closeSocket();
                 out = null;
                 if (dis != null)
                     dis.close();
                 if (socket != null)
                     socket.close();
-                // TODO: 2016/9/9 重新连接
+                onSocketChangeListener.onSocketDisConnect();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -121,6 +122,7 @@ public class InputThread extends Thread {
                     // TODO: 2016/9/9 out 发送RSA编码后的AESkey
                     out.sendMessage(new TranProtocol((byte)0xff,
                             SecurityHS.formRSAPublicKey(this.keyBytesRSA)));
+                    out.sendXServiceStackMessage();//三次握手后发送堆栈的信息
                 } else {
                     this.keyBytesAES = null;
                     reConnect();
