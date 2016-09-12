@@ -12,6 +12,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.UUID;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -173,20 +174,25 @@ public class SecurityHS {
             /**RSA
              * 公钥加密,私钥解密
              */
-            String message = "bulasuo:腰包满是银子,米加德遍地鲜花!!";//UUID.randomUUID().toString();
+            String message = UUID.randomUUID().toString();//"bulasuo:腰包满是银子,米加德遍地鲜花!!";
             RSAKeyParMaker mRSAKeyParMaker = new RSAKeyParMaker();
             byte[] encodeB = RSAEncode(message.getBytes(), formRSAPublicKey(mRSAKeyParMaker.publicKey.getEncoded()));
-            byte[] decodeB = RSADecode(encodeB, formRSAPrivateKey(mRSAKeyParMaker.privateKey.getEncoded()));
-            System.out.println("result::"+new String(decodeB));
+//            byte[] encodeB = RSAEncode(message.getBytes(), mRSAKeyParMaker.publicKey);
+            byte[] temp = new byte[encodeB.length];
+            for(int i = 0;i<encodeB.length;i++)
+                temp[i] = encodeB[i];
+//            byte[] decodeB = RSADecode(temp, formRSAPrivateKey(mRSAKeyParMaker.privateKey.getEncoded()));
+            byte[] decodeB = RSADecode(temp, mRSAKeyParMaker.privateKey);
+            System.out.println("result::"+new String(decodeB)+"-encodeB.length:"+encodeB.length);
 
             /**RSA
              * 私钥加密,公钥解密
              */
-            String message1 = "bulasuo:腰包满是银子,米加德遍地鲜花!!";//UUID.randomUUID().toString();
+            /*String message1 = "bulasuo:腰包满是银子,米加德遍地鲜花!!";//UUID.randomUUID().toString();
             RSAKeyParMaker mRSAKeyParMaker1 = new RSAKeyParMaker();
             byte[] encodeB1 = RSAEncode(message1.getBytes(), formRSAPrivateKey(mRSAKeyParMaker1.privateKey.getEncoded()));
             byte[] decodeB1 = RSADecode(encodeB1, formRSAPublicKey(mRSAKeyParMaker1.publicKey.getEncoded()));
-            System.out.println("result::"+new String(decodeB1));
+            System.out.println("result::"+new String(decodeB1));*/
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

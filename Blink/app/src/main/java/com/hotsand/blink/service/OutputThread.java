@@ -46,10 +46,10 @@ public class OutputThread extends Thread {
      */
     public void sendMessage(TranProtocol tranProtocol) {
         synchronized (this) {
-            synchronized (XService.tranProtocolList) {
+            synchronized (XService.tranProtocolList) {System.out.println("set_message111_inin");
                 this.tranProtocol = tranProtocol;
+                this.notifyAll();
             }
-            this.notifyAll();
         }
     }
 
@@ -57,10 +57,8 @@ public class OutputThread extends Thread {
      * 发送XService  tranProtocolList里存放的消息
      */
     public void sendXServiceStackMessage() {
-        synchronized (this) {
-            synchronized (XService.tranProtocolList) {
-            }
-            this.notifyAll();
+        synchronized (this) {System.out.println("set_message222_inin");
+                this.notifyAll();
         }
     }
 
@@ -68,13 +66,14 @@ public class OutputThread extends Thread {
     public void run() {
         try {
             while (true) {
-                synchronized (this) {
-                    synchronized (XService.tranProtocolList) {
-                        while(tranProtocol == null && XService.tranProtocolList.size() <= 0){
-                            this.wait();
-                            if(socket.isClosed() || tryDestroy)
-                                tryDestroy();
-                        }
+                synchronized (this) {System.out.println("out_send_inin111");
+                    while(tranProtocol == null && XService.tranProtocolList.size() <= 0){
+                        this.wait();
+                        if(socket.isClosed() || tryDestroy)
+                            tryDestroy();
+                    }
+                    synchronized (XService.tranProtocolList) {System.out.println("out_send_inin222??");
+
                         if (tranProtocol != null) {
                             if (keyBytesAES != null)
                                 tranProtocol.keyBytesAES = this.keyBytesAES;
@@ -82,7 +81,9 @@ public class OutputThread extends Thread {
                             dos.flush();
                             tranProtocol = null;
                         } else if (XService.tranProtocolList.size() > 0) {
-                            for (TranProtocol tranProtocol : XService.tranProtocolList) {
+                            TranProtocol tranProtocol;
+                            for(int i=0;i<XService.tranProtocolList.size();i++){
+                                tranProtocol = XService.tranProtocolList.get(i);
                                 if (keyBytesAES != null)
                                     tranProtocol.keyBytesAES = this.keyBytesAES;
                                 tranProtocol.sendData(dos);

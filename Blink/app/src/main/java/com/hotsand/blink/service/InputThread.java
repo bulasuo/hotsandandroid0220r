@@ -122,7 +122,7 @@ public class InputThread extends Thread {
                     // TODO: 2016/9/9 out 发送RSA编码后的AESkey
                     out.sendMessage(new TranProtocol((byte)0xff,
                             SecurityHS.formRSAPublicKey(this.keyBytesRSA)));
-                    out.sendXServiceStackMessage();//三次握手后发送堆栈的信息
+//                    out.sendXServiceStackMessage();//三次握手后发送堆栈的信息
                 } else {
                     this.keyBytesAES = null;
                     reConnect();

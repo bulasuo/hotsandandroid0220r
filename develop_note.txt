@@ -12,3 +12,17 @@
 	java.net.SocketException: sendto failed: ECONNRESET (Connection reset by peer)服务器断开
 	java.net.SocketException: sendto failed: ETIMEDOUT (Connection timed out)c端自己断网
 	java.net.SocketException: sendto failed: EPIPE (Broken pipe)服务端把socket关了
+
+
+2016/9/12
+	待test: notify和notifyall的区别 
+			:synchronized的参数是内存还是引用 还静态变量是不是就是它的整个类
+
+
+2016/9/12
+java并发编程个人小结-abu
+	1. obj.notifyAll();依次唤醒所有在在此obj上wait的线程.并让它们在wait处向下运行
+	2.obj.notify();相对于notifyAll()只唤醒一个线程,具体是哪个由jvm决定
+	3.synchronized();参数是还有obj.notify的obj obj.notifyAll的obj还有obj.wait的obj都是同步对象不是引用,即同步那个内存块而不是指针
+	4.notify()和notifyAll要在获得obj锁的时候调用,即obj.wait和obj.notify和obj.notifyAll要在synchronized(obj)语句块里调用,否则报java.lang.IllegalMonitorStateException
+	
