@@ -45,8 +45,10 @@ public class OutputThread extends Thread {
      *@author   abu   2016/9/10   9:41
      */
     public void sendMessage(TranProtocol tranProtocol) {
-        synchronized (XService.tranProtocolList) {
-            this.tranProtocol = tranProtocol;
+        synchronized (this) {
+            synchronized (XService.tranProtocolList) {
+                this.tranProtocol = tranProtocol;
+            }
             this.notifyAll();
         }
     }
@@ -55,7 +57,9 @@ public class OutputThread extends Thread {
      * 发送XService  tranProtocolList里存放的消息
      */
     public void sendXServiceStackMessage() {
-        synchronized (XService.tranProtocolList) {
+        synchronized (this) {
+            synchronized (XService.tranProtocolList) {
+            }
             this.notifyAll();
         }
     }
@@ -63,24 +67,30 @@ public class OutputThread extends Thread {
     @Override
     public void run() {
         try {
-            while (!socket.isClosed() && !tryDestroy) {
-                synchronized (XService.tranProtocolList) {
-                    if(tranProtocol != null){
-                        if (keyBytesAES != null)
-                            tranProtocol.keyBytesAES = this.keyBytesAES;
-                        tranProtocol.sendData(dos);
-                        dos.flush();
-                        tranProtocol = null;
-                    }else if (XService.tranProtocolList.size() > 0) {
-                        for (TranProtocol tranProtocol : XService.tranProtocolList) {
+            while (true) {
+                synchronized (this) {
+                    synchronized (XService.tranProtocolList) {
+                        while(tranProtocol == null && XService.tranProtocolList.size() <= 0){
+                            this.wait();
+                            if(socket.isClosed() || tryDestroy)
+                                tryDestroy();
+                        }
+                        if (tranProtocol != null) {
                             if (keyBytesAES != null)
                                 tranProtocol.keyBytesAES = this.keyBytesAES;
                             tranProtocol.sendData(dos);
                             dos.flush();
-                            XService.tranProtocolList.remove(tranProtocol);
+                            tranProtocol = null;
+                        } else if (XService.tranProtocolList.size() > 0) {
+                            for (TranProtocol tranProtocol : XService.tranProtocolList) {
+                                if (keyBytesAES != null)
+                                    tranProtocol.keyBytesAES = this.keyBytesAES;
+                                tranProtocol.sendData(dos);
+                                dos.flush();
+                                XService.tranProtocolList.remove(tranProtocol);
+                            }
                         }
                     }
-                    this.wait();
                 }
             }
         } catch (Exception e) {
