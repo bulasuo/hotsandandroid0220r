@@ -66,6 +66,7 @@ public class InputThread extends Thread {
                 readMessage();
             }
         } catch (Exception e) {
+            System.out.println(e);
             e.printStackTrace();
         } finally {
             try {
@@ -116,7 +117,6 @@ public class InputThread extends Thread {
                 readData(bufferIndex + 4);
                 this.keyBytesRSA = readRSAKey(XUtil.byteArray2Int(buffer, bufferIndex - 4));
                 if(isPackLegal()){
-                    System.out.println("RSAKey:"+XUtil.bytes2HexString(keyBytesRSA));
                     this.keyBytesAES = UUID.randomUUID().toString().getBytes();
                     out.keyBytesAES = this.keyBytesAES;
                     // TODO: 2016/9/9 out 发送RSA编码后的AESkey

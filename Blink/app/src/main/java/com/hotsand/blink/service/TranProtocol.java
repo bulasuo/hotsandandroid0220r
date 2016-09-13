@@ -90,7 +90,6 @@ public class TranProtocol {
         dos.write(boundaryBytes);
         dos.write(HEAD);
         dos.write(LINE);
-        System.out.println("AESKeyBytesRSAEncode:"+XUtil.bytes2HexString(AESKeyBytesRSAEncode));
     }
 
     /**

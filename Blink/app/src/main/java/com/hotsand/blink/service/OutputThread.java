@@ -46,7 +46,7 @@ public class OutputThread extends Thread {
      */
     public void sendMessage(TranProtocol tranProtocol) {
         synchronized (this) {
-            synchronized (XService.tranProtocolList) {System.out.println("set_message111_inin");
+            synchronized (XService.tranProtocolList) {
                 this.tranProtocol = tranProtocol;
                 this.notifyAll();
             }
@@ -57,7 +57,7 @@ public class OutputThread extends Thread {
      * 发送XService  tranProtocolList里存放的消息
      */
     public void sendXServiceStackMessage() {
-        synchronized (this) {System.out.println("set_message222_inin");
+        synchronized (this) {
                 this.notifyAll();
         }
     }
@@ -66,13 +66,13 @@ public class OutputThread extends Thread {
     public void run() {
         try {
             while (true) {
-                synchronized (this) {System.out.println("out_send_inin111");
+                synchronized (this) {
                     while(tranProtocol == null && XService.tranProtocolList.size() <= 0){
                         this.wait();
                         if(socket.isClosed() || tryDestroy)
                             tryDestroy();
                     }
-                    synchronized (XService.tranProtocolList) {System.out.println("out_send_inin222??");
+                    synchronized (XService.tranProtocolList) {
 
                         if (tranProtocol != null) {
                             if (keyBytesAES != null)
@@ -95,6 +95,7 @@ public class OutputThread extends Thread {
                 }
             }
         } catch (Exception e) {
+            System.out.println(e);
             e.printStackTrace();
         } finally {
             try {
