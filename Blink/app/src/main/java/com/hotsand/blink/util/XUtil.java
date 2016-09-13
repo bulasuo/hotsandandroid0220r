@@ -156,6 +156,8 @@ public class XUtil {
     public final static byte[] hex = "0123456789abcdef".getBytes();
 
     public static String bytes2HexString(byte[] bb) {
+        if(bb == null)
+            return null;
         int i, len;
         len = bb.length;
         byte[] b = new byte[len];
@@ -173,6 +175,8 @@ public class XUtil {
     }
 
     public static byte[] hexString2Bytes(String s) {
+        if(s == null)
+            return null;
         String ss = s.replace(" ", "");
         int string_len = ss.length();
         int len = string_len / 2;
