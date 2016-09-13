@@ -7,7 +7,6 @@ import com.hotsand.blink.security.SecurityHS;
 import com.hotsand.blink.util.XUtil;
 
 import java.io.DataInputStream;
-import java.io.IOException;
 import java.net.Socket;
 import java.util.UUID;
 
@@ -35,15 +34,10 @@ public class InputThread extends Thread {
     private int readLength;
 
     public void tryDestroy(){
-        try {
-            tryDestroy = true;
-            if (dis != null)
-                dis.close();
-            if (socket != null)
-                socket.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        tryDestroy = true;
+        XUtil.closeDataInputStream(dis);
+        XUtil.closeSocket(socket);
+        this.interrupt();
     }
 
     public InputThread(Socket socket, OutputThread out, OnSocketChangeListener onSocketChangeListener) {
@@ -60,7 +54,7 @@ public class InputThread extends Thread {
     @Override
     public void run() {
         try {
-            while (!socket.isClosed() && !tryDestroy) {
+            while (!isInterrupted() && !socket.isClosed() && !tryDestroy) {
                 // TODO: 2016/9/5 心跳包
                 //增加一个5分钟没有连接就断开 防止客户端意外断开
                 readMessage();
@@ -69,17 +63,11 @@ public class InputThread extends Thread {
             System.out.println(e);
             e.printStackTrace();
         } finally {
-            try {
-                XService.closeSocket();
-                out = null;
-                if (dis != null)
-                    dis.close();
-                if (socket != null)
-                    socket.close();
-                onSocketChangeListener.onSocketDisConnect();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            XService.closeSocket();
+            out = null;
+            XUtil.closeDataInputStream(dis);
+            XUtil.closeSocket(socket);
+            onSocketChangeListener.onSocketDisConnect();
         }
 
     }
@@ -173,20 +161,19 @@ public class InputThread extends Thread {
      * 读取数据到buffer 到buffer长度为length
      *
      * @param length 应该小于等于BUFFER_MAX_LENGTH
-     * @throws IOException
      */
     private void readData(int length) throws Exception {
         if (bufferIndex >= length || length > BUFFER_MAX_LENGTH)
-            return;
+            throw new Exception();
         while (!tryDestroy) {
             while ((readLength = dis.read(buffer, bufferIndex, length - bufferIndex)) > 0) {
                 System.out.println("readLength:" + readLength);
-                if(readLength == -1)
-                    throw new Exception();
                 bufferIndex += readLength;
                 if (bufferIndex >= length)
                     return;
             }
+            if(readLength == -1)
+                throw new Exception();
         }
     }
 
@@ -195,7 +182,6 @@ public class InputThread extends Thread {
      *
      * @param buf
      * @param length 应该小于等于buf的长度
-     * @throws IOException
      */
     private void readDataIntoBuffer(byte[] buf, int length) throws Exception {
         int index = 0;
@@ -203,19 +189,18 @@ public class InputThread extends Thread {
         while (!tryDestroy) {
             while ((readl = dis.read(buf, index, length - index)) > 0) {
                 System.out.println("readLength:" + readl);
-                if(readl == -1)
-                    throw new Exception();
                 index += readl;
                 if (index >= length)
                     return;
             }
+            if(readl == -1)
+                throw new Exception();
         }
     }
 
     /**
      * 读消息以及处理消息，抛出异常
      *
-     * @throws IOException
      * @throws ClassNotFoundException
      */
     private void readMessage() throws Exception {

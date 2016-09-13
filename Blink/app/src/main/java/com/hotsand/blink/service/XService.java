@@ -7,6 +7,8 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.widget.Toast;
 
+import com.hotsand.blink.util.XUtil;
+
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -76,24 +78,17 @@ public class XService extends Service implements OnSocketChangeListener{
 
     public static void closeSocket(){
         synchronized (XService.tranProtocolList) {
-            try {
-                if (in != null) {
-                    in.tryDestroy = true;
-                    in.tryDestroy();
-                    in = null;
-                }
-                if (out != null) {
-                    out.tryDestroy = true;
-                    out.tryDestroy();
-                    out = null;
-                }
-                if (socket != null) {
-                    socket.close();
-                    socket = null;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (in != null) {
+                in.tryDestroy = true;
+                in.tryDestroy();
+                in = null;
             }
+            if (out != null) {
+                out.tryDestroy = true;
+                out.tryDestroy();
+                out = null;
+            }
+            XUtil.closeSocket(socket);
         }
     }
 

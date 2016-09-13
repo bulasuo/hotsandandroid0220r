@@ -1,8 +1,12 @@
 package com.hotsand.blink.util;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -11,6 +15,46 @@ import java.util.ArrayList;
  * Created by abu on 2016/9/1 11:10.
  */
 public class XUtil {
+
+    public static void closeSocket(Socket socket){
+        if(socket != null) {
+            try {
+                socket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void closeDataInputStream(DataInputStream dis){
+        if(dis != null) {
+            try {
+                dis.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void closeDataOutputStream(DataOutputStream dos){
+        if(dos != null) {
+            try {
+                dos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void closeFileOutputStream(FileOutputStream fos){
+        if(fos != null) {
+            try {
+                fos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /**
      * get请求
@@ -51,15 +95,15 @@ public class XUtil {
         return result;
     }
 
-    /**
-     * 删除文件list
-     * @param fileList
-     */
     public static void deleteDir(ArrayList<String> fileList){
-        File file;
-        for(String fileStr:fileList) {
-            file = new File(fileStr);
-            deleteDirAndFile(file);
+        if(fileList != null) {
+            try {
+                File file;
+                for (String fileStr : fileList) {
+                    file = new File(fileStr);
+                    deleteDirAndFile(file);
+                }
+            }catch (Exception e){}
         }
     }
 

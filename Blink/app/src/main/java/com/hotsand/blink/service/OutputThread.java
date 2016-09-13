@@ -1,5 +1,7 @@
 package com.hotsand.blink.service;
 
+import com.hotsand.blink.util.XUtil;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -18,15 +20,10 @@ public class OutputThread extends Thread {
     public byte[] keyBytesAES;//AES口令bytes 用于加密数据
 
     public void tryDestroy() {
-        try {
-            tryDestroy = true;
-            if (dos != null)
-                dos.close();
-            if (socket != null)
-                socket.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        tryDestroy = true;
+        XUtil.closeDataOutputStream(dos);
+        XUtil.closeSocket(socket);
+        this.interrupt();
     }
 
 
@@ -69,8 +66,8 @@ public class OutputThread extends Thread {
                 synchronized (this) {
                     while(tranProtocol == null && XService.tranProtocolList.size() <= 0){
                         this.wait();
-                        if(socket.isClosed() || tryDestroy)
-                            tryDestroy();
+                        if(isInterrupted() || socket.isClosed() || tryDestroy)
+                            throw new Exception();
                     }
                     synchronized (XService.tranProtocolList) {
 
@@ -98,16 +95,10 @@ public class OutputThread extends Thread {
             System.out.println(e);
             e.printStackTrace();
         } finally {
-            try {
-                XService.closeSocket();
-                if (dos != null)
-                    dos.close();
-                if (socket != null)
-                    socket.close();
-                onSocketChangeListener.onSocketDisConnect();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            XService.closeSocket();
+            XUtil.closeDataOutputStream(dos);
+            XUtil.closeSocket(socket);
+            onSocketChangeListener.onSocketDisConnect();
         }
     }
 }
