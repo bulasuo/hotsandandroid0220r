@@ -61,6 +61,7 @@ public class OutputThread extends Thread {
 
     @Override
     public void run() {
+        super.run();
         try {
             while (true) {
                 synchronized (this) {

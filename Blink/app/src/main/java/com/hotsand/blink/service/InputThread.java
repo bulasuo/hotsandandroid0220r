@@ -53,6 +53,7 @@ public class InputThread extends Thread {
 
     @Override
     public void run() {
+        super.run();
         try {
             while (!isInterrupted() && !socket.isClosed() && !tryDestroy) {
                 // TODO: 2016/9/5 心跳包

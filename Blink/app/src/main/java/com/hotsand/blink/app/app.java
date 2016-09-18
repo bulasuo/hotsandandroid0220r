@@ -12,7 +12,7 @@ public class App extends Application {
 
     @Override
     public void onCreate() {
-        System.out.println("ininin");
+        System.out.println("inininbulasuo_suladi");
         super.onCreate();
         startService(new Intent(this, XService.class));
     }

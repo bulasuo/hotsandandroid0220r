@@ -142,8 +142,9 @@ public class XService extends Service implements OnSocketChangeListener{
 
         @Override
         public void run() {
+            super.run();
             try {
-                socket.connect(new InetSocketAddress("192.168.1.107", 8080), TIME_OUT);
+                socket.connect(new InetSocketAddress("192.168.1.118", 8080), TIME_OUT);
                 if(socket.isConnected()){
                     System.out.println("Connected......");
                     onSocketChangeListener.onSocketConnect();
