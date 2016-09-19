@@ -80,7 +80,7 @@ public class InputThread extends Thread {
      */
     private void goProtocolType(byte type) throws Exception {
         switch (type) {
-            case (byte) 0x01:
+            case TranProtocol.TP_JSONSTR:
                 if (keyBytesRSA == null || keyBytesAES == null) {
                     reConnect();
                     return;
@@ -102,14 +102,14 @@ public class InputThread extends Thread {
                     reConnect();
                 }
                 break;
-            case (byte) 0xff:
+            case TranProtocol.TP_SSH:
                 readData(bufferIndex + 4);
                 this.keyBytesRSA = readRSAKey(XUtil.byteArray2Int(buffer, bufferIndex - 4));
                 if(isPackLegal()){
                     this.keyBytesAES = UUID.randomUUID().toString().getBytes();
                     out.keyBytesAES = this.keyBytesAES;
                     // TODO: 2016/9/9 out 发送RSA编码后的AESkey
-                    out.sendMessage(new TranProtocol((byte)0xff,
+                    out.sendMessage(new TranProtocol(TranProtocol.TP_SSH,
                             SecurityHS.formRSAPublicKey(this.keyBytesRSA)));
 //                    out.sendXServiceStackMessage();//三次握手后发送堆栈的信息
                 } else {
