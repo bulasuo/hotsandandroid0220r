@@ -22,8 +22,6 @@ public class TranProtocol {
     public static final byte TP_JSONSTR = (byte)0x01;
     public static final byte TP_SSH = (byte)0xff;
 
-    ss把协议写在这,开始写接口
-
     private byte protocolType;//协议类型
     private Key keyPublicRSA;//RSA公钥 用于加密AESkey
     public byte[] keyBytesAES;//AES口令bytes 用于加密数据
