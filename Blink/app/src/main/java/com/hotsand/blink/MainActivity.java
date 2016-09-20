@@ -11,7 +11,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hotsand.blink.constant.Constant;
+import com.hotsand.blink.service.ActionInterface;
+import com.hotsand.blink.service.TranProtocol;
+import com.hotsand.blink.service.XService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,11 +51,12 @@ public class MainActivity extends AppCompatActivity {
         addActionTestButton("获取短信验证码API", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                final JSONObject json = new JSONObject();
+                json.put(ActionInterface.KEY.ACTION, ActionInterface.VALUE.USER_GET_SMS);
+                json.put(ActionInterface.KEY.TAG, "获取短信验证码");
+                XService.sendMessage(new TranProtocol(TranProtocol.TP_JSONSTR, json.toJSONString()));
             }
         });
-
-
     }
 
 
