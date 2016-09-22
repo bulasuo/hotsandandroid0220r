@@ -16,6 +16,8 @@ public interface ActionInterface {
                 , TAG = "tag"
                 , ACTION = "action"
                 , OBJ = "obj"
+
+                , PHONE = "phone"
                 ;
     }
 

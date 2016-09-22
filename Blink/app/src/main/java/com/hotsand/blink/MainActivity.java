@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         this.unregisterReceiver(mReceiver);
+        this.unregisterReceiver(mReceiver);
         super.onDestroy();
     }
 
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         initActionTestButton();
         //放在最后防止mReceive里的处理用到的组件还未初始化.
         this.registerReceiver(mReceiver, getFilter());
+        this.registerReceiver(mReceiver, getFilter());
     }
 
     private void initActionTestButton(){
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 final JSONObject json = new JSONObject();
                 json.put(ActionInterface.KEY.ACTION, ActionInterface.VALUE.USER_GET_SMS);
                 json.put(ActionInterface.KEY.TAG, "获取短信验证码");
+                json.put(ActionInterface.KEY.PHONE, "15062239769");
                 XService.sendMessage(new TranProtocol(TranProtocol.TP_JSONSTR, json.toJSONString()));
             }
         });

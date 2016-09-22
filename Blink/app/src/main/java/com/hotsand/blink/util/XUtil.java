@@ -62,13 +62,15 @@ public class XUtil {
      * @param param
      * @return
      */
-    public static String sendGet(String url, String param) {
+    public static String getRequest(String url, String param) {
         String result = "";
         BufferedReader in = null;
         try {
             String urlNameString = url + "?" + param;
             URL realUrl = new URL(urlNameString);
             URLConnection connection = realUrl.openConnection();
+            connection.setConnectTimeout(1000);
+            connection.setReadTimeout(1000);
             connection.setRequestProperty("accept", "*/*");
             connection.setRequestProperty("user-agent",
                     "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
