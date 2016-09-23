@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.widget.Toast;
 
+import com.hotsand.blink.Config;
 import com.hotsand.blink.util.XUtil;
 
 import java.net.InetSocketAddress;
@@ -106,7 +107,9 @@ public class XService extends Service {
         public void run() {
             super.run();
             try {
-                socket.connect(new InetSocketAddress("192.168.1.106", 8080), TIME_OUT);
+                System.out.println("c_1111");
+                socket.connect(new InetSocketAddress(Config.SERVER_IP, Config.SERVER_PORT), TIME_OUT);
+                System.out.println("c_2222");
                 if(socket.isConnected()){
                     System.out.println("Connected......");
                     onSocketChangeListener.onSocketConnect();

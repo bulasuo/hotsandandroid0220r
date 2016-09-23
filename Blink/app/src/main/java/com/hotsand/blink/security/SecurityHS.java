@@ -118,11 +118,14 @@ public class SecurityHS {
      */
     public static byte[] AESEncode(byte[] data, byte[] key) throws Exception {
         KeyGenerator keyGenerator = KeyGenerator.getInstance(AES);
-        keyGenerator.init(new SecureRandom(key));
+        SecureRandom random=SecureRandom.getInstance("SHA1PRNG");
+        random.setSeed(key);
+        keyGenerator.init(random);
         Key securekey = keyGenerator.generateKey();
-        SecureRandom sr = new SecureRandom();
+//        SecureRandom sr = new SecureRandom();
         Cipher cipher = Cipher.getInstance(AES_ECB_PKCS5PADDING);
-        cipher.init(Cipher.ENCRYPT_MODE, securekey, sr);
+//        cipher.init(Cipher.ENCRYPT_MODE, securekey, sr);
+        cipher.init(Cipher.ENCRYPT_MODE, securekey);
         data = cipher.doFinal(data);
         return data;
     }
@@ -132,11 +135,14 @@ public class SecurityHS {
      */
     public static byte[] AESDecode(byte[] data, byte[] key) throws Exception{
         KeyGenerator keyGenerator = KeyGenerator.getInstance(AES);
-        keyGenerator.init(new SecureRandom(key));
+        SecureRandom random=SecureRandom.getInstance("SHA1PRNG");
+        random.setSeed(key);
+        keyGenerator.init(random);
         Key securekey = keyGenerator.generateKey();
-        SecureRandom sr = new SecureRandom();
+//        SecureRandom sr = new SecureRandom();
         Cipher cipher = Cipher.getInstance(AES_ECB_PKCS5PADDING);
-        cipher.init(Cipher.DECRYPT_MODE, securekey,sr);
+//        cipher.init(Cipher.DECRYPT_MODE, securekey, sr);
+        cipher.init(Cipher.DECRYPT_MODE, securekey);
         data = cipher.doFinal(data);
         return data;
     }
@@ -191,10 +197,10 @@ public class SecurityHS {
 		System.out.println("---"+message.length());
 
 
-        try {
-            /**RSA
+        /*try {
+            *//**RSA
              * 公钥加密,私钥解密
-             */
+             *//*
             String message1 = UUID.randomUUID().toString();//"bulasuo:腰包满是银子,米加德遍地鲜花!!";
             RSAKeyParMaker mRSAKeyParMaker = new RSAKeyParMaker();
             byte[] encodeB = RSAEncode(message1.getBytes(), formRSAPublicKey(mRSAKeyParMaker.publicKey.getEncoded()));
@@ -206,20 +212,20 @@ public class SecurityHS {
             byte[] decodeB = RSADecode(temp, mRSAKeyParMaker.privateKey);
             System.out.println("result::"+new String(decodeB)+"-encodeB.length:"+encodeB.length);
 
-            /**RSA
+            *//**RSA
              * 私钥加密,公钥解密
-             */
-            /*String message1 = "bulasuo:腰包满是银子,米加德遍地鲜花!!";//UUID.randomUUID().toString();
+             *//*
+            *//*String message1 = "bulasuo:腰包满是银子,米加德遍地鲜花!!";//UUID.randomUUID().toString();
             RSAKeyParMaker mRSAKeyParMaker1 = new RSAKeyParMaker();
             byte[] encodeB1 = RSAEncode(message1.getBytes(), formRSAPrivateKey(mRSAKeyParMaker1.privateKey.getEncoded()));
             byte[] decodeB1 = RSADecode(encodeB1, formRSAPublicKey(mRSAKeyParMaker1.publicKey.getEncoded()));
-            System.out.println("result::"+new String(decodeB1));*/
+            System.out.println("result::"+new String(decodeB1));*//*
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         final long endTime = System.currentTimeMillis();
         System.out.println("end  :"+endTime+"\nuse time:"+(endTime - startTime));

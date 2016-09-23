@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements ActionInterface, 
                 json.put(Key.ACTION, ActionInt.USER_GET_SMS);
                 json.put(Key.TAG, "获取短信验证码");
                 json.put(Key.PHONE, "15062239769");
-                XService.sendMessage(new TranProtocol(TranProtocol.TP_JSONSTR, json.toJSONString()));
+                XService.sendMessage(new TranProtocol(json.toJSONString()));
             }
         });
     }

@@ -32,17 +32,16 @@ public class TranProtocol {
 
     private String[] filePatch;
 
-    public TranProtocol(byte protocolType, Key keyPublicRSA){
-        this.protocolType = protocolType;
+    public TranProtocol(Key keyPublicRSA){
+        this.protocolType = TP_SSH;
         this.keyPublicRSA = keyPublicRSA;
     }
 
     /**
-     * @param protocolType
      * @param jsonStr 封装了请求参数
      */
-    public TranProtocol(byte protocolType, String jsonStr){
-        this.protocolType = protocolType;
+    public TranProtocol(String jsonStr){
+        this.protocolType = TP_JSONSTR;
         this.jsonStr = jsonStr;
     }
 
@@ -104,8 +103,11 @@ public class TranProtocol {
             throw new RuntimeException("null point exception on keyBytesAES !!");
         }
         final byte[] boundaryBytes = UUID.randomUUID().toString().getBytes();
+        byte[] bb = jsonStr.getBytes();
+        System.out.println("bb:"+XUtil.bytes2HexString(bb));
         final byte[] jsonStrEncodeBytes
-                = SecurityHS.AESEncode(jsonStr.getBytes(), keyBytesAES);
+                = SecurityHS.AESEncode(bb, keyBytesAES);
+        System.out.println("jsonStrEncodeBytes\n"+XUtil.bytes2HexString(jsonStrEncodeBytes));
         dos.write(HEAD);
         dos.write(boundaryBytes);
         dos.write(LINE);
