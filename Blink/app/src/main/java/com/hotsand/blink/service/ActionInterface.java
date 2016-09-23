@@ -9,7 +9,7 @@ public interface ActionInterface {
      * 数据传输的字段
      *@author   abu   2016/9/6   15:47
      */
-    interface KEY{
+    interface Key{
         String
                 CODE = "code"
                 , MESSAGE = "message"
@@ -25,7 +25,7 @@ public interface ActionInterface {
      * c端请求的action值 int类型
      *@author   abu   2016/9/6   15:47
      */
-    interface VALUE{
+    interface ActionInt{
         int
                 USER__REGIST = 1                  //注册_无需权限
                 , USER__LOGIN = 2                   //登录_个人权限

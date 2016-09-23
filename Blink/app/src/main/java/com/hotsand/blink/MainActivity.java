@@ -12,19 +12,19 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hotsand.blink.constant.Constant;
+import com.hotsand.blink.constant.ConstantInterface;
 import com.hotsand.blink.service.ActionInterface;
 import com.hotsand.blink.service.TranProtocol;
 import com.hotsand.blink.service.XService;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ActionInterface, ConstantInterface {
 
     private LinearLayout ll_container;
     private LayoutInflater inflater;
 
-    private void addActionTestButton(String actionName, View.OnClickListener listener){
+    private void addActionTestButton(String ActionStrName, View.OnClickListener listener){
         final Button btn = (Button) inflater.inflate(R.layout.inflater_button, null);
-        btn.setText(actionName);
+        btn.setText(ActionStrName);
         btn.setOnClickListener(listener);
         ll_container.addView(btn);
     }
@@ -42,21 +42,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ll_container = (LinearLayout)findViewById(R.id.ll_container);
         inflater = getLayoutInflater();
-        initActionTestButton();
+        initActionStrTestButton();
         //放在最后防止mReceive里的处理用到的组件还未初始化.
         this.registerReceiver(mReceiver, getFilter());
         this.registerReceiver(mReceiver, getFilter());
     }
 
-    private void initActionTestButton(){
+    private void initActionStrTestButton(){
         //获取短信验证码
         addActionTestButton("获取短信验证码API", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final JSONObject json = new JSONObject();
-                json.put(ActionInterface.KEY.ACTION, ActionInterface.VALUE.USER_GET_SMS);
-                json.put(ActionInterface.KEY.TAG, "获取短信验证码");
-                json.put(ActionInterface.KEY.PHONE, "15062239769");
+                json.put(Key.ACTION, ActionInt.USER_GET_SMS);
+                json.put(Key.TAG, "获取短信验证码");
+                json.put(Key.PHONE, "15062239769");
                 XService.sendMessage(new TranProtocol(TranProtocol.TP_JSONSTR, json.toJSONString()));
             }
         });
@@ -67,139 +67,139 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             switch(intent.getAction()){
-                case Constant.Action.USER_GET_SMS:
+                case ActionStr.USER_GET_SMS:
 
                     break;
-                case Constant.Action.BLINK__BLINK:
+                case ActionStr.BLINK__BLINK:
 
                     break;
-                case Constant.Action.BLINK__MY_BLINKERS:
+                case ActionStr.BLINK__MY_BLINKERS:
 
                     break;
-                case Constant.Action.BLINK__MY_BLINKS:
+                case ActionStr.BLINK__MY_BLINKS:
 
                     break;
-                case Constant.Action.BLINK__UNBLINK:
+                case ActionStr.BLINK__UNBLINK:
 
                     break;
-                case Constant.Action.BOOK__DELETE:
+                case ActionStr.BOOK__DELETE:
 
                     break;
-                case Constant.Action.BOOK__INSERT:
+                case ActionStr.BOOK__INSERT:
 
                     break;
-                case Constant.Action.BOOK__QUERY:
+                case ActionStr.BOOK__QUERY:
 
                     break;
-                case Constant.Action.BOOK__UPDATE:
+                case ActionStr.BOOK__UPDATE:
 
                     break;
-                case Constant.Action.DYNAMIC__DELETE:
+                case ActionStr.DYNAMIC__DELETE:
 
                     break;
-                case Constant.Action.DYNAMIC__INSERT:
+                case ActionStr.DYNAMIC__INSERT:
 
                     break;
-                case Constant.Action.DYNAMIC__QUERY:
+                case ActionStr.DYNAMIC__QUERY:
 
                     break;
-                case Constant.Action.DYNAMIC__UPFATE:
+                case ActionStr.DYNAMIC__UPFATE:
 
                     break;
-                case Constant.Action.MOVIE__DELETE:
+                case ActionStr.MOVIE__DELETE:
 
                     break;
-                case Constant.Action.MOVIE__INSERT:
+                case ActionStr.MOVIE__INSERT:
 
                     break;
-                case Constant.Action.MOVIE__QUERY:
+                case ActionStr.MOVIE__QUERY:
 
                     break;
-                case Constant.Action.MOVIE__UPDATE:
+                case ActionStr.MOVIE__UPDATE:
 
                     break;
-                case Constant.Action.MUSIC__DELETE:
+                case ActionStr.MUSIC__DELETE:
 
                     break;
-                case Constant.Action.MUSIC__INSERT:
+                case ActionStr.MUSIC__INSERT:
 
                     break;
-                case Constant.Action.MUSIC__QUERY:
+                case ActionStr.MUSIC__QUERY:
 
                     break;
-                case Constant.Action.MUSIC__UPDATE:
+                case ActionStr.MUSIC__UPDATE:
 
                     break;
-                case Constant.Action.MV__DELETE:
+                case ActionStr.MV__DELETE:
 
                     break;
-                case Constant.Action.MV__INSERT:
+                case ActionStr.MV__INSERT:
 
                     break;
-                case Constant.Action.MV__QUERY:
+                case ActionStr.MV__QUERY:
 
                     break;
-                case Constant.Action.MV__UPDATE:
+                case ActionStr.MV__UPDATE:
 
                     break;
-                case Constant.Action.TOPIC__DELETE:
+                case ActionStr.TOPIC__DELETE:
 
                     break;
-                case Constant.Action.TOPIC__INSERT:
+                case ActionStr.TOPIC__INSERT:
 
                     break;
-                case Constant.Action.TOPIC__QUERY:
+                case ActionStr.TOPIC__QUERY:
 
                     break;
-                case Constant.Action.TOPIC__UPDATE:
+                case ActionStr.TOPIC__UPDATE:
 
                     break;
-                case Constant.Action.TOPIC_REPLY2__DELETE:
+                case ActionStr.TOPIC_REPLY2__DELETE:
 
                     break;
-                case Constant.Action.TOPIC_REPLY2__INSERT:
+                case ActionStr.TOPIC_REPLY2__INSERT:
 
                     break;
-                case Constant.Action.TOPIC_REPLY2__QUERY:
+                case ActionStr.TOPIC_REPLY2__QUERY:
 
                     break;
-                case Constant.Action.TOPIC_REPLY2__UPDATE:
+                case ActionStr.TOPIC_REPLY2__UPDATE:
 
                     break;
-                case Constant.Action.TOPIC_REPLY__DELETE:
+                case ActionStr.TOPIC_REPLY__DELETE:
 
                     break;
-                case Constant.Action.TOPIC_REPLY__INSERT:
+                case ActionStr.TOPIC_REPLY__INSERT:
 
                     break;
-                case Constant.Action.TOPIC_REPLY__QUERY:
+                case ActionStr.TOPIC_REPLY__QUERY:
 
                     break;
-                case Constant.Action.TOPIC_REPLY__UPDATE:
+                case ActionStr.TOPIC_REPLY__UPDATE:
 
                     break;
-                case Constant.Action.USER__AGREEMENT:
+                case ActionStr.USER__AGREEMENT:
 
                     break;
-                case Constant.Action.USER__LOGIN:
+                case ActionStr.USER__LOGIN:
 
                     break;
-                case Constant.Action.USER__QUERY:
+                case ActionStr.USER__QUERY:
 
                     break;
-                case Constant.Action.USER__REGIST:
+                case ActionStr.USER__REGIST:
 
                     break;
-                case Constant.Action.USER__UPDATE:
+                case ActionStr.USER__UPDATE:
 
                     break;
-                case Constant.Action.USER_DETAIL__INSERT:
+                case ActionStr.USER_DETAIL__INSERT:
 
                     break;
-                case Constant.Action.USER_DETAIL__QUERY:
+                case ActionStr.USER_DETAIL__QUERY:
 
                     break;
-                case Constant.Action.USER_DETAIL__UPDATE:
+                case ActionStr.USER_DETAIL__UPDATE:
 
                     break;
                 default:
@@ -210,51 +210,51 @@ public class MainActivity extends AppCompatActivity {
 
     private IntentFilter getFilter(){
         final IntentFilter mFilter = new IntentFilter();
-        mFilter.addAction(Constant.Action.USER_GET_SMS);
-        mFilter.addAction(Constant.Action.BLINK__BLINK);
-        mFilter.addAction(Constant.Action.BLINK__MY_BLINKERS);
-        mFilter.addAction(Constant.Action.BLINK__MY_BLINKS);
-        mFilter.addAction(Constant.Action.BLINK__UNBLINK);
-        mFilter.addAction(Constant.Action.BOOK__DELETE);
-        mFilter.addAction(Constant.Action.BOOK__INSERT);
-        mFilter.addAction(Constant.Action.BOOK__QUERY);
-        mFilter.addAction(Constant.Action.BOOK__UPDATE);
-        mFilter.addAction(Constant.Action.DYNAMIC__DELETE);
-        mFilter.addAction(Constant.Action.DYNAMIC__INSERT);
-        mFilter.addAction(Constant.Action.DYNAMIC__QUERY);
-        mFilter.addAction(Constant.Action.DYNAMIC__UPFATE);
-        mFilter.addAction(Constant.Action.MOVIE__DELETE);
-        mFilter.addAction(Constant.Action.MOVIE__INSERT);
-        mFilter.addAction(Constant.Action.MOVIE__QUERY);
-        mFilter.addAction(Constant.Action.MOVIE__UPDATE);
-        mFilter.addAction(Constant.Action.MUSIC__DELETE);
-        mFilter.addAction(Constant.Action.MUSIC__INSERT);
-        mFilter.addAction(Constant.Action.MUSIC__QUERY);
-        mFilter.addAction(Constant.Action.MUSIC__UPDATE);
-        mFilter.addAction(Constant.Action.MV__DELETE);
-        mFilter.addAction(Constant.Action.MV__INSERT);
-        mFilter.addAction(Constant.Action.MV__QUERY);
-        mFilter.addAction(Constant.Action.MV__UPDATE);
-        mFilter.addAction(Constant.Action.TOPIC__DELETE);
-        mFilter.addAction(Constant.Action.TOPIC__INSERT);
-        mFilter.addAction(Constant.Action.TOPIC__QUERY);
-        mFilter.addAction(Constant.Action.TOPIC__UPDATE);
-        mFilter.addAction(Constant.Action.TOPIC_REPLY2__DELETE);
-        mFilter.addAction(Constant.Action.TOPIC_REPLY2__INSERT);
-        mFilter.addAction(Constant.Action.TOPIC_REPLY2__QUERY);
-        mFilter.addAction(Constant.Action.TOPIC_REPLY2__UPDATE);
-        mFilter.addAction(Constant.Action.TOPIC_REPLY__DELETE);
-        mFilter.addAction(Constant.Action.TOPIC_REPLY__INSERT);
-        mFilter.addAction(Constant.Action.TOPIC_REPLY__QUERY);
-        mFilter.addAction(Constant.Action.TOPIC_REPLY__UPDATE);
-        mFilter.addAction(Constant.Action.USER__AGREEMENT);
-        mFilter.addAction(Constant.Action.USER__LOGIN);
-        mFilter.addAction(Constant.Action.USER__QUERY);
-        mFilter.addAction(Constant.Action.USER__REGIST);
-        mFilter.addAction(Constant.Action.USER__UPDATE);
-        mFilter.addAction(Constant.Action.USER_DETAIL__INSERT);
-        mFilter.addAction(Constant.Action.USER_DETAIL__QUERY);
-        mFilter.addAction(Constant.Action.USER_DETAIL__UPDATE);
+        mFilter.addAction(ActionStr.USER_GET_SMS);
+        mFilter.addAction(ActionStr.BLINK__BLINK);
+        mFilter.addAction(ActionStr.BLINK__MY_BLINKERS);
+        mFilter.addAction(ActionStr.BLINK__MY_BLINKS);
+        mFilter.addAction(ActionStr.BLINK__UNBLINK);
+        mFilter.addAction(ActionStr.BOOK__DELETE);
+        mFilter.addAction(ActionStr.BOOK__INSERT);
+        mFilter.addAction(ActionStr.BOOK__QUERY);
+        mFilter.addAction(ActionStr.BOOK__UPDATE);
+        mFilter.addAction(ActionStr.DYNAMIC__DELETE);
+        mFilter.addAction(ActionStr.DYNAMIC__INSERT);
+        mFilter.addAction(ActionStr.DYNAMIC__QUERY);
+        mFilter.addAction(ActionStr.DYNAMIC__UPFATE);
+        mFilter.addAction(ActionStr.MOVIE__DELETE);
+        mFilter.addAction(ActionStr.MOVIE__INSERT);
+        mFilter.addAction(ActionStr.MOVIE__QUERY);
+        mFilter.addAction(ActionStr.MOVIE__UPDATE);
+        mFilter.addAction(ActionStr.MUSIC__DELETE);
+        mFilter.addAction(ActionStr.MUSIC__INSERT);
+        mFilter.addAction(ActionStr.MUSIC__QUERY);
+        mFilter.addAction(ActionStr.MUSIC__UPDATE);
+        mFilter.addAction(ActionStr.MV__DELETE);
+        mFilter.addAction(ActionStr.MV__INSERT);
+        mFilter.addAction(ActionStr.MV__QUERY);
+        mFilter.addAction(ActionStr.MV__UPDATE);
+        mFilter.addAction(ActionStr.TOPIC__DELETE);
+        mFilter.addAction(ActionStr.TOPIC__INSERT);
+        mFilter.addAction(ActionStr.TOPIC__QUERY);
+        mFilter.addAction(ActionStr.TOPIC__UPDATE);
+        mFilter.addAction(ActionStr.TOPIC_REPLY2__DELETE);
+        mFilter.addAction(ActionStr.TOPIC_REPLY2__INSERT);
+        mFilter.addAction(ActionStr.TOPIC_REPLY2__QUERY);
+        mFilter.addAction(ActionStr.TOPIC_REPLY2__UPDATE);
+        mFilter.addAction(ActionStr.TOPIC_REPLY__DELETE);
+        mFilter.addAction(ActionStr.TOPIC_REPLY__INSERT);
+        mFilter.addAction(ActionStr.TOPIC_REPLY__QUERY);
+        mFilter.addAction(ActionStr.TOPIC_REPLY__UPDATE);
+        mFilter.addAction(ActionStr.USER__AGREEMENT);
+        mFilter.addAction(ActionStr.USER__LOGIN);
+        mFilter.addAction(ActionStr.USER__QUERY);
+        mFilter.addAction(ActionStr.USER__REGIST);
+        mFilter.addAction(ActionStr.USER__UPDATE);
+        mFilter.addAction(ActionStr.USER_DETAIL__INSERT);
+        mFilter.addAction(ActionStr.USER_DETAIL__QUERY);
+        mFilter.addAction(ActionStr.USER_DETAIL__UPDATE);
         return mFilter;
     }
 

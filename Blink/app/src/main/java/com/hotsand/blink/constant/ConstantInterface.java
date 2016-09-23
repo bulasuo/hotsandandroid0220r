@@ -4,8 +4,8 @@ package com.hotsand.blink.constant;
  * Created by abu on 2016/9/19 16:59.
  * 放广播的action,或者其他的全局变量
  */
-public class Constant {
-    public interface Action{
+public interface ConstantInterface {
+     interface ActionStr{
         String USER_GET_SMS = "USER_GET_SMS";
         String USER_DETAIL__QUERY = "USER_DETAIL__QUERY";
         String USER_DETAIL__UPDATE = "USER_DETAIL__UPDATE";
