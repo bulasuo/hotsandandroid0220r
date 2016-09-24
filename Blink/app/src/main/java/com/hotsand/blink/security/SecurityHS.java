@@ -115,25 +115,10 @@ public class SecurityHS {
      * AES加密
      */
     public static byte[] AESEncode(byte[] data, byte[] key) throws Exception {
-        try {
-        /*KeyGenerator keyGenerator = KeyGenerator.getInstance(AES);
-        *//*SecureRandom random=SecureRandom.getInstance("SHA1PRNG");
-        random.setSeed(key);
-        keyGenerator.init(128, random);*//*
-        SecureRandom sr = new SecureRandom(key);
-        keyGenerator.init(sr);
-        Key securekey = keyGenerator.generateKey();*/
-
-            SecretKeySpec securekey = new SecretKeySpec(key, "AES");
-//            SecureRandom sr = new SecureRandom();
-//            SecureRandom sr = new SecureRandom(key);
-            Cipher cipher = Cipher.getInstance(AES_ECB_PKCS5PADDING);
-            cipher.init(Cipher.ENCRYPT_MODE, securekey);
-//        cipher.init(Cipher.DECRYPT_MODE, securekey);
-            data = cipher.doFinal(data);
-        }catch(Exception e){
-            System.out.println(e.toString());
-        }
+        SecretKeySpec securekey = new SecretKeySpec(key, AES);
+        Cipher cipher = Cipher.getInstance(AES_ECB_PKCS5PADDING);
+        cipher.init(Cipher.ENCRYPT_MODE, securekey);
+        data = cipher.doFinal(data);
         return data;
     }
 
@@ -141,19 +126,9 @@ public class SecurityHS {
      * AES解密
      */
     public static byte[] AESDecode(byte[] data, byte[] key) throws Exception{
-        /*KeyGenerator keyGenerator = KeyGenerator.getInstance(AES);
-        *//*SecureRandom random=SecureRandom.getInstance("SHA1PRNG");
-        random.setSeed(key);
-        keyGenerator.init(128, random);*//*
-        SecureRandom sr = new SecureRandom(key);
-        keyGenerator.init(sr);
-        Key securekey = keyGenerator.generateKey();*/
-
-        SecretKeySpec securekey = new SecretKeySpec(key, "AES");
-//        SecureRandom sr = new SecureRandom(key);
+        SecretKeySpec securekey = new SecretKeySpec(key, AES);
         Cipher cipher = Cipher.getInstance(AES_ECB_PKCS5PADDING);
         cipher.init(Cipher.DECRYPT_MODE, securekey);
-//        cipher.init(Cipher.DECRYPT_MODE, securekey);
         data = cipher.doFinal(data);
         return data;
     }

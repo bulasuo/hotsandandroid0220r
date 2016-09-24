@@ -104,11 +104,8 @@ public class TranProtocol {
         }
         final byte[] boundaryBytes = UUID.randomUUID().toString().getBytes();
         byte[] bb = jsonStr.getBytes();
-        System.out.println("bb:"+XUtil.bytes2HexString(bb));
         final byte[] jsonStrEncodeBytes
                 = SecurityHS.AESEncode(bb, keyBytesAES);
-        System.out.println("keyBytesAES:"+XUtil.bytes2HexString(keyBytesAES));
-        System.out.println("jsonStrEncodeBytes\n"+XUtil.bytes2HexString(jsonStrEncodeBytes));
         dos.write(HEAD);
         dos.write(boundaryBytes);
         dos.write(LINE);
