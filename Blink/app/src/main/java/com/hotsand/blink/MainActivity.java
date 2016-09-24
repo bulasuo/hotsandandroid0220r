@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity implements ActionInterface, 
     @Override
     protected void onDestroy() {
         this.unregisterReceiver(mReceiver);
-        this.unregisterReceiver(mReceiver);
         super.onDestroy();
     }
 
@@ -44,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements ActionInterface, 
         inflater = getLayoutInflater();
         initActionStrTestButton();
         //放在最后防止mReceive里的处理用到的组件还未初始化.
-        this.registerReceiver(mReceiver, getFilter());
         this.registerReceiver(mReceiver, getFilter());
     }
 

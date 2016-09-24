@@ -106,7 +106,7 @@ public class InputThread extends Thread {
                 readData(bufferIndex + 4);
                 this.keyBytesRSA = readRSAKey(XUtil.byteArray2Int(buffer, bufferIndex - 4));
                 if(isPackLegal()){
-                    this.keyBytesAES = UUID.randomUUID().toString().getBytes();
+                    this.keyBytesAES = UUID.randomUUID().toString().getBytes();//"2222222222222222".getBytes();
                     out.keyBytesAES = this.keyBytesAES;
                     // TODO: 2016/9/9 out 发送RSA编码后的AESkey
                     out.sendMessage(new TranProtocol(SecurityHS.formRSAPublicKey(this.keyBytesRSA)));

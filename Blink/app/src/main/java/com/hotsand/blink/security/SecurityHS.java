@@ -7,16 +7,14 @@ import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.UUID;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Created by abu on 2016/8/26 10:53.
@@ -117,16 +115,25 @@ public class SecurityHS {
      * AES加密
      */
     public static byte[] AESEncode(byte[] data, byte[] key) throws Exception {
-        KeyGenerator keyGenerator = KeyGenerator.getInstance(AES);
-        SecureRandom random=SecureRandom.getInstance("SHA1PRNG");
+        try {
+        /*KeyGenerator keyGenerator = KeyGenerator.getInstance(AES);
+        *//*SecureRandom random=SecureRandom.getInstance("SHA1PRNG");
         random.setSeed(key);
-        keyGenerator.init(random);
-        Key securekey = keyGenerator.generateKey();
-//        SecureRandom sr = new SecureRandom();
-        Cipher cipher = Cipher.getInstance(AES_ECB_PKCS5PADDING);
-//        cipher.init(Cipher.ENCRYPT_MODE, securekey, sr);
-        cipher.init(Cipher.ENCRYPT_MODE, securekey);
-        data = cipher.doFinal(data);
+        keyGenerator.init(128, random);*//*
+        SecureRandom sr = new SecureRandom(key);
+        keyGenerator.init(sr);
+        Key securekey = keyGenerator.generateKey();*/
+
+            SecretKeySpec securekey = new SecretKeySpec(key, "AES");
+//            SecureRandom sr = new SecureRandom();
+//            SecureRandom sr = new SecureRandom(key);
+            Cipher cipher = Cipher.getInstance(AES_ECB_PKCS5PADDING);
+            cipher.init(Cipher.ENCRYPT_MODE, securekey);
+//        cipher.init(Cipher.DECRYPT_MODE, securekey);
+            data = cipher.doFinal(data);
+        }catch(Exception e){
+            System.out.println(e.toString());
+        }
         return data;
     }
 
@@ -134,15 +141,19 @@ public class SecurityHS {
      * AES解密
      */
     public static byte[] AESDecode(byte[] data, byte[] key) throws Exception{
-        KeyGenerator keyGenerator = KeyGenerator.getInstance(AES);
-        SecureRandom random=SecureRandom.getInstance("SHA1PRNG");
+        /*KeyGenerator keyGenerator = KeyGenerator.getInstance(AES);
+        *//*SecureRandom random=SecureRandom.getInstance("SHA1PRNG");
         random.setSeed(key);
-        keyGenerator.init(random);
-        Key securekey = keyGenerator.generateKey();
-//        SecureRandom sr = new SecureRandom();
+        keyGenerator.init(128, random);*//*
+        SecureRandom sr = new SecureRandom(key);
+        keyGenerator.init(sr);
+        Key securekey = keyGenerator.generateKey();*/
+
+        SecretKeySpec securekey = new SecretKeySpec(key, "AES");
+//        SecureRandom sr = new SecureRandom(key);
         Cipher cipher = Cipher.getInstance(AES_ECB_PKCS5PADDING);
-//        cipher.init(Cipher.DECRYPT_MODE, securekey, sr);
         cipher.init(Cipher.DECRYPT_MODE, securekey);
+//        cipher.init(Cipher.DECRYPT_MODE, securekey);
         data = cipher.doFinal(data);
         return data;
     }
@@ -176,11 +187,11 @@ public class SecurityHS {
         /**
          * AES加密解密
          */
-		String message = "1122布拉索:腰包满是银子,米加德遍地鲜花!布拉索:腰包满是银子,米加德遍地鲜花!!";
-        String key = UUID.randomUUID().toString();
+		String message = "8888999999887775";
+        String key = "5555555555555555";//UUID.randomUUID().toString();
         byte[] entryptedMsg;
 		try {
-			System.out.println("result--"+message.getBytes().length);
+			System.out.println("result--"+message.getBytes().length+"\nkey.getBytes().length:"+key.getBytes().length);
 			entryptedMsg = AESEncode(message.getBytes(),key.getBytes());
 
 	        System.out.println("111::"+entryptedMsg.length);
